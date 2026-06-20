@@ -4,8 +4,7 @@
 #include "MarketManager.h"
 #include <fstream>
 
-std::vector<std::string> Util::splitCommand(const std::string& input)
-{
+std::vector<std::string> Util::splitCommand(const std::string& input) {
     std::vector<std::string> tokens;
     std::stringstream ss(input);
     std::string token;
@@ -15,8 +14,7 @@ std::vector<std::string> Util::splitCommand(const std::string& input)
     return tokens;
 }
 
-void Util::saveWorld(const std::map<std::string, User*>& users)
-{
+void Util::saveWorld(const std::map<std::string, User*>& users) {
     std::ofstream outFile("users.txt");
     if (!outFile) {
         return;
@@ -30,35 +28,40 @@ void Util::saveWorld(const std::map<std::string, User*>& users)
     std::cout << "Game saved successfully.\nGoodbye!\n";
 }
 
-void Util::loadWorld(std::map<std::string, User*>& users)
-{
+void Util::loadWorld(std::map<std::string, User*>& users) {
     std::ifstream inFile("users.txt");
     if (!inFile) {
         return;
     }
 
-    std::string username, password, role;
-    while (inFile >> username >> password >> role) {
-        User* newUser = nullptr;
-        if (role == "Player") {
-            newUser = new Player(username, password);
-        }
-        else if (role == "TaskManager") {
-            newUser = new TaskManager(username, password);
-        }
-        else if (role == "MarketManager") {
-            newUser = new MarketManager(username, password);
-        }
+    std::string line;
+    while (std::getline(inFile, line)) {
+        if (line.empty()) continue;
 
-        if (newUser) {
-            users[username] = newUser;
+        std::stringstream ss(line);
+        std::string username, password, role;
+
+        if (ss >> username >> password >> role) {
+            User* newUser = nullptr;
+            if (role == "Player") {
+                newUser = new Player(username, password);
+            }
+            else if (role == "TaskManager") {
+                newUser = new TaskManager(username, password);
+            }
+            else if (role == "MarketManager") {
+                newUser = new MarketManager(username, password);
+            }
+
+            if (newUser) {
+                users[username] = newUser;
+            }
         }
     }
     inFile.close();
 }
 
-void Util::printHeader()
-{
+void Util::printHeader() {
     std::cout << "========================================\n";
     std::cout << "            BARN BOSS\n";
     std::cout << "========================================\n\n";

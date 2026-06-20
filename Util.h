@@ -15,4 +15,5 @@ public:
     static void loadWorld(std::map<std::string, User*>& users);
 
     static void printHeader();
+
 };
